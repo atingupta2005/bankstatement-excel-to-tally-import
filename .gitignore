@@ -1,0 +1,4 @@
+*.pyc
+Data
+CData.Python.Tally
+.vscode

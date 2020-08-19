@@ -1,0 +1,123 @@
+sbi: 
+  header-row: 20
+  AccountName: "B1"
+  AccountNo: "B7"
+  dateFormat: "%d-%b-%y"
+  Sno: "-"
+  Period: "-"
+  StartDate: "B18"
+  EndDate: "B19"
+  TxnDate: "A"
+  ValueDate: "B"
+  Description: "C"
+  RefNo: "D"
+  Debit_Credit: "-"
+  AmountDebit: "E"
+  AmountCredit: "F"
+  Amount: "-"
+  Balance: "G"
+  Todo: 
+    - "Add Sno"
+
+kmbl: 
+  header-row: 13
+  AccountName: "A2"
+  AccountNo: "F4"
+  dateFormat: "%d/%m/%Y"
+  Period: "F5"
+  StartDate: "Calc"
+  EndDate: "Calc"
+  Sno: "A"
+  TxnDate: "B"
+  ValueDate: "-"
+  Description: "C"
+  RefNo: "D"
+  Amount: "E"
+  Debit_Credit: "F"
+  AmountDebit: "Calc"
+  AmountCredit: "Calc"
+  Balance: "G"
+  Todo: 
+    - "Calculate From To Date"
+    - "Clean Account Number"
+    - "Break Debit/ Credit in 2 Columns"
+
+
+
+indusind: 
+  header-row: 27
+  AccountName: "-"
+  AccountNo: "C21"
+  dateFormat: "%d %b %Y"
+  Period: "-"
+  StartDate: "C23"
+  EndDate: "E23"
+  Sno: "A"
+  TxnDate: "B"
+  ValueDate: "-"
+  TxnType: "C"
+  Description: "D"
+  RefNo: "-"
+  Amount: "-"
+  Debit_Credit: "-"
+  AmountDebit: "E"
+  AmountCredit: "F"
+  Balance: "G"
+  Todo: 
+    - "Detect Account Name"
+
+mapping:
+#A Single Intermediate file after merging all trasactions from all bank account.
+#This file will be used to create xltool files
+  SnoCopied: "Sno"
+  Sno: "Calc"
+  InitiatingBankAccountName: "AccountName"
+  BankAccountNumber: "AccountNo"
+  CrossAccountName: "Calc"
+  IsContra: "Calc"
+  VoucherType: "Calc"
+  IsTransferInFamily: "Calc"
+  IsSuspense: "Calc"
+  TaxRebate: "Calc"
+  NeedManualReview: "Calc"
+  TxnDate: "TxnDate"
+  TxnType: "TxnType"
+  ValueDate: "ValueDate"
+  Description: "Description"
+  RefNo: "RefNo"
+  AmountDebit: "AmountDebit"
+  AmountCredit: "AmountCredit"
+  Balance: "Balance"
+
+xltool:
+# Multiple files for each tally account to be created
+   DATE: 
+    - "A"
+    - "TxnDate"
+   LEDGER - BY / DR: 
+    - "B"
+    - "Calc"
+   LEDGER - TO / CR: 
+    - "C"
+    - "Calc"
+   AMOUNT: 
+    - "D"
+    - "Calc"
+   VOUCHER TYPE: 
+    - "E"
+    - "Calc"
+   CUSTOMISE VOUCHER TYPE: 
+    - "F"
+    - "Calc"
+   STANDARD NARRATION: 
+    - "G"
+    - "Calc"
+   VOUCHER NO: 
+    - "H"
+    - "Calc"
+   BILL / INVOICE NO: 
+    - "I"
+    - "Calc"
+   BILL / INVOICE DATE: 
+    - "J"
+    - "Calc"
