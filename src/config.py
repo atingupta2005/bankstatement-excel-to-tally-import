@@ -8,7 +8,6 @@ def getConfig(strLabel, *labels):
     strVal = cfg.get(strLabel,"")
     i = 0
     while type(strVal) is dict:
-        print (strVal)
         strVal = strVal.get(labels[i],"")
         i += 1
 

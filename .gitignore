@@ -2,3 +2,5 @@
 Data
 CData.Python.Tally
 .vscode
+*.log
+*.csv

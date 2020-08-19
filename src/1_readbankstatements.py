@@ -15,6 +15,29 @@ Sno = 0
 dataFilesPath = getConfig("bankstatements", "folderpath")
 logging.basicConfig(level=logging.DEBUG)
 
+def processAccountName(accountName, accountNo):
+    accountName = accountName.lower()
+
+    if "atin" in accountName:
+        accountName = "ATIN KUMAR"
+    elif "pooja" in accountName:
+        accountName = "POOJA GUPTA"
+    elif "girjesh" in accountName:
+        accountName = "GIRJESH GUPTA"
+    elif "att logics" in accountName:
+        accountName = "ATT LOGICS PVT LTD"
+    elif "att traders" in accountName:
+        accountName = "ATT TRADERS"
+    elif "sharad" in accountName:
+        accountName = "SHARAD KUMAR GUPTA"
+    elif "200008519416" in accountNo:
+        accountName = "ATT LOGICS PVT LTD"
+    elif "100004509247" in accountNo:
+        accountName = "GIRJESH GUPTA"
+
+
+    return accountName
+
 def toDate(datetime_str, strFormat):
     try:
         datetime_object = datetime.strptime(datetime_str, strFormat)
@@ -150,8 +173,9 @@ def readCSVFile(strFilePath):
 
     sheet = p.get_sheet(file_name=strFilePath)
 
-    accountName = getValueFromSheet(bankName, sheet, "AccountName")
     accountNo = "'" + getValueFromSheet(bankName, sheet, "AccountNo")
+    accountName = getValueFromSheet(bankName, sheet, "AccountName")
+    accountName = processAccountName(accountName, accountNo)
     period = getValueFromSheet(bankName, sheet, "Period")
     periods = periodToDates(period)
     startDate = getValueFromSheet(bankName, sheet, "StartDate")

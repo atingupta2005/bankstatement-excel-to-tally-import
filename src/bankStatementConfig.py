@@ -4,6 +4,9 @@ import yaml
 file = open('./bankstatements-format.yaml', 'r')
 cfg = yaml.load(file, Loader=yaml.FullLoader)
 
+def getBankStatementDict(strKey):
+    return cfg.get(strKey, "")
+
 
 def getBankStatementConfig(strLabel, *labels):
     strVal = cfg.get(strLabel,"")
