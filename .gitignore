@@ -4,3 +4,6 @@ CData.Python.Tally
 .vscode
 *.log
 *.csv
+logs
+log.txt
+myvenv

@@ -1,14 +1,9 @@
-import json
 import yaml
 
-file = open('./bankstatements-format.yaml', 'r')
+file = open('resources/config.yaml', 'r')
 cfg = yaml.load(file, Loader=yaml.FullLoader)
 
-def getBankStatementDict(strKey):
-    return cfg.get(strKey, "")
-
-
-def getBankStatementConfig(strLabel, *labels):
+def getConfig(strLabel, *labels):
     strVal = cfg.get(strLabel,"")
     i = 0
     while type(strVal) is dict:
@@ -18,4 +13,4 @@ def getBankStatementConfig(strLabel, *labels):
     return strVal
 
 if __name__=="__main__":
-    print(getBankStatementConfig("sbi", "RefNo"))
+    print(getConfig("bankstatements", "folderpath"))

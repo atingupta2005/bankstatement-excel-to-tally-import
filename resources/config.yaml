@@ -1,0 +1,6 @@
+# Specify app configuration here
+bankstatements:
+   folderpath: "Data/BankStatements"
+   consolidated: "Data/consolidated.csv"
+   consolidatedMapping: "Data/consolidated_mapping.csv"
+   xltoolimportfile: "Data/xltoolimportfile.csv"

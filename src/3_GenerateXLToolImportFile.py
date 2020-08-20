@@ -1,22 +1,29 @@
 import pandas as pd
-from config import getConfig
+from att.logger import exception
+from att.logger import create_logger
 import re
-from crossAccountMapping import dictAcNameDict
-from bankStatementConfig import getBankStatementConfig
-from bankStatementConfig import getBankStatementDict
+from att.config import getConfig
+from att.crossAccountMapping import dictAcNameDict
+from att.bankStatementConfig import getBankStatementConfig
+from att.bankStatementConfig import getBankStatementDict
 
+logger = create_logger()
+
+@exception(logger)
 def getBankLedgerName(row):
     if "indusind" in row['Bank'].lower():
         return "Indusind Bank A/c"
 
+@exception(logger)
 def getXLToolColumnNames():
     columns = getBankStatementDict("xltool")
 
     return list(columns.keys())
 
+@exception(logger)
 def writeXLToolFile(accountName):
     dfConsolidatedMapping = pd.read_csv(getConfig("bankstatements", "consolidatedMapping"))
-    print(dfConsolidatedMapping.columns)
+    logger.info(f"{dfConsolidatedMapping.columns}")
 
     dfConsolidatedMapping = dfConsolidatedMapping[dfConsolidatedMapping['AccountName'] == accountName]
 

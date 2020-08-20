@@ -1,0 +1,9 @@
+pyyaml
+pandas
+pyexcel
+pyexcel-xls
+numpy
+pyexcel-io
+PyYAML
+virtualenv
+xlrd

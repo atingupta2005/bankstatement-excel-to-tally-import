@@ -1,20 +1,22 @@
 from datetime import datetime
 import csv
 import sys
-import pandas as pd
 import logging
-import logger
+from att.logger import create_logger
+from att.logger import exception
 from os import listdir
 from os.path import isfile, join
 import pyexcel as p
-from bankStatementConfig import getBankStatementConfig
-from config import getConfig
+from att.bankStatementConfig import getBankStatementConfig
+from att.config import getConfig
 import re
 
 Sno = 0
 dataFilesPath = getConfig("bankstatements", "folderpath")
-logging.basicConfig(level=logging.DEBUG)
 
+logger = create_logger()
+
+@exception(logger)
 def processAccountName(accountName, accountNo):
     accountName = accountName.lower()
 
@@ -38,6 +40,7 @@ def processAccountName(accountName, accountNo):
 
     return accountName
 
+@exception(logger)
 def toDate(datetime_str, strFormat):
     try:
         datetime_object = datetime.strptime(datetime_str, strFormat)
@@ -46,12 +49,14 @@ def toDate(datetime_str, strFormat):
         return ""
 
 
+@exception(logger)
 def periodToDates(period):
     period = re.sub(r"From ", "", period)
 
     periods = period.split(" To ")
     return periods;
 
+@exception(logger)
 def toNumber(strNum):
     strNum = removeSpace(strNum)
     strNum = re.sub(r",", "", strNum)
@@ -64,6 +69,7 @@ def toNumber(strNum):
 
     return val
 
+@exception(logger)
 def removeSpace(s):
     s = str(s)
     s = re.sub(r"^\s+|\s+$", "", s)
@@ -72,19 +78,19 @@ def removeSpace(s):
     s = re.sub(r"\"", "", s)
     return s
 
-#@logger.logentry
+@exception(logger)
 def getCSVFiles():
     files = [join(dataFilesPath, f) for f in listdir(dataFilesPath) if isfile(join(dataFilesPath, f)) and f.endswith(".csv")]
 
     return files
 
-#@logger.logentry
+@exception(logger)
 def getExcelFiles():
     files = [join(dataFilesPath, f) for f in listdir(dataFilesPath) if isfile(join(dataFilesPath, f)) and f.endswith(".xls")]
 
     return files
 
-#@logger.logentry
+@exception(logger)
 def readCSVFiles():
     csvfiles = getCSVFiles()
     
@@ -98,14 +104,15 @@ def readCSVFiles():
 
         for csvfile in csvfiles:
             rows_new = readCSVFile(csvfile)
-            #logging.info(rows_new)
+            #logger.info(rows_new)
             
             rows.extend(rows_new)
 
         csvwriter.writerows(rows)
 
-            #logging.info("df1: ", df1)
+            #logger.info("df1: ", df1)
 
+@exception(logger)
 def detectBankName(strFilePath):
     strType = "-"
     strFilePath = strFilePath.upper()
@@ -119,19 +126,20 @@ def detectBankName(strFilePath):
     return strType
 
 
+@exception(logger)
 def getValueFromSheet(bankName, sheet, strLabel, row_ref=0):
     if strLabel == "Amount1":
-        logging.info("-------------------Starting getValueFromSheet: " + strLabel)
+        logger.info("-------------------Starting getValueFromSheet: " + strLabel)
 
     strValue = ""
     try:
         if strLabel == "Amount1":
-            logging.info(bankName + " : " + strLabel + " : " +  str(row_ref))
+            logger.info(bankName + " : " + strLabel + " : " +  str(row_ref))
 
         ref_Label = getBankStatementConfig(bankName,strLabel)
 
         if strLabel == "Amount1":
-            logging.info("ref_Label : " + str(ref_Label))
+            logger.info("ref_Label : " + str(ref_Label))
 
         if ref_Label != "Calc" and ref_Label != "-":
             if row_ref == 0:
@@ -140,11 +148,11 @@ def getValueFromSheet(bankName, sheet, strLabel, row_ref=0):
                 ref_Label_C = ref_Label + str(row_ref)
                 
                 if strLabel == "Amount1":
-                    logging.info("ref_Label_C : " + ref_Label_C)
+                    logger.info("ref_Label_C : " + ref_Label_C)
                 strValue = sheet[ref_Label_C]
 
         if strLabel == "Amount1":
-            logging.info(strLabel + " : " + str(ref_Label) + " : " + str(strValue))
+            logger.info(strLabel + " : " + str(ref_Label) + " : " + str(strValue))
     except IndexError:
         strValue = ""
         #raise
@@ -153,23 +161,23 @@ def getValueFromSheet(bankName, sheet, strLabel, row_ref=0):
         print("Unexpected error:", sys.exc_info()[0])
         raise
     finally:
-        #logging.info(bankName)
-        #logging.info(strLabel)
-        #logging.info(row_ref)
-        #logging.info(ref_Label)
+        #logger.info(bankName)
+        #logger.info(strLabel)
+        #logger.info(row_ref)
+        #logger.info(ref_Label)
         pass
         
     return removeSpace(strValue)
     
 
-#@logger.logentry
+@exception(logger)
 def readCSVFile(strFilePath):
     global Sno
 
-    logging.info("strFilePath: " + strFilePath)
+    logger.info("strFilePath: " + strFilePath)
     
     bankName = detectBankName(strFilePath)
-    logging.info("bankName: " + bankName)
+    logger.info("bankName: " + bankName)
 
     sheet = p.get_sheet(file_name=strFilePath)
 
@@ -219,7 +227,7 @@ def readCSVFile(strFilePath):
 
         #if (Description == "" and TxnDate == "") or not (SnoCopied.isnumeric() and SnoCopied != "-" and SnoCopied != ""  and SnoCopied != " " ):
         if (AmountDebit == 0 and AmountCredit == 0 and Balance == 0):
-            logging.info("Break...................")
+            logger.info("Break...................")
             break
 
         TxnDate = toDate(TxnDate, dateFormat)

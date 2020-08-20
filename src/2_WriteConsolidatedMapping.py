@@ -1,11 +1,17 @@
 import pandas as pd
-from config import getConfig
 import re
-from crossAccountMapping import dictAcNameDict
+from att.logger import exception
+from att.logger import create_logger
+from att.config import getConfig
+from att.crossAccountMapping import dictAcNameDict
 
+logger = create_logger()
+
+@exception(logger)
 def getNeedManualReview(row):
     return "NeedManualReview"
 
+@exception(logger)
 def getCrossAccountName(row):
     acName = "Suspense"
     for key,val in dictAcNameDict.items():
@@ -16,6 +22,7 @@ def getCrossAccountName(row):
         
     return acName
 
+@exception(logger)
 def getColumnName(key):
     if "_" in key:
         key_r = key.split("_")[1]
@@ -24,6 +31,7 @@ def getColumnName(key):
 
     return key_r
 
+@exception(logger)
 def getCrossAccountName_v2(row):
     acName = "Suspense"
     my_match = []
@@ -32,27 +40,27 @@ def getCrossAccountName_v2(row):
                         
     isLog = True
     if "mr atin kumar sbin0010079" in row["DescriptionRefNo"]:
-        print ("isLog = True : ", row["DescriptionRefNo"])
+        logger.info (f"isLog = True : {row['DescriptionRefNo']}")
         isLog = True
 
-    if isLog: print (row)
+    if isLog: logger.info (f"{row}")
 
 
     for key,val in dictAcNameDict.items():
         match = False
 
-        if isLog: print ("1: ", (key, val))
+        if isLog: logger.info (f"1:  {(key, val)}")
 
         for l_item in val:
-            if isLog: print ("2: ", l_item)
+            if isLog: logger.info (f"2: {l_item}")
 
             for k1, v1 in l_item.items():
-                if isLog: print ("3: ", (k1, v1))
+                if isLog: logger.info (f"3:  {(k1, v1)}")
                 column_name = getColumnName(k1)
                 for v2 in v1:
                     if isLog:
-                        print ("4: ", v2)
-                        print ("match: ", (v2, row[column_name].lower()))
+                        logger.info (f"4:  {v2}")
+                        logger.info (f"match: {(v2, row[column_name].lower())}")
 
                     match = re.findall(v2.lower(), row[column_name].lower())
                     if match:
@@ -61,25 +69,26 @@ def getCrossAccountName_v2(row):
                         my_label.append(k1)
                         #match,v2,k1 = [], "", ""
 
-                        if isLog: print("4: There is match. breaking")
+                        if isLog: logger.info("4: There is match. breaking")
                         break;
 
                 if not match:
-                    if isLog: print("3: There is nott a match. breaking")
+                    if isLog: logger.info("3: There is nott a match. breaking")
                     break
 
             if match:
-                if isLog: print("2: There is match. breaking")
+                if isLog: logger.info("2: There is match. breaking")
                 break
 
         if match:
-            if isLog: print("1: There is match. returning value")
+            if isLog: logger.info("1: There is match. returning value")
             acName =  key
             break
 
     return acName, my_match, my_v2, my_label
 
 
+@exception(logger)
 def getIsContra(row):
     dctContraAccount = {
         "All": ["Cash","Fixed Deposit", "PayTM Withdrawal"],
@@ -103,6 +112,7 @@ def getIsContra(row):
 
     return IsContra
 
+@exception(logger)
 def getVoucherType(row):
     strVoucherType = ""
     lstAllowedVoucherTypes = ["Receipt","Payment","Contra","Journal","Purchase",
@@ -116,6 +126,7 @@ def getVoucherType(row):
 
     return strVoucherType
 
+@exception(logger)
 def getIsTransferInFamily(row):
     IsTransferInFamily = False
     dctFamily = {
@@ -135,9 +146,11 @@ def getIsTransferInFamily(row):
 
     return IsTransferInFamily
 
+@exception(logger)
 def getIsSuspense(row):
     return row['CrossAccountName'] == "Suspense"
 
+@exception(logger)
 def getIsTaxRebate(row):
     dctTRAccount = {
         "All": ["LIC",],
@@ -157,6 +170,7 @@ def getIsTaxRebate(row):
 
     return IsTaxRebate
 
+@exception(logger)
 def getAccountBankName(row):
     strAccountBankName = ""
     
@@ -174,6 +188,7 @@ def getAccountBankName(row):
     return strAccountBankName
 
 
+@exception(logger)
 def getAccountName(row):
     strAccountName = row['AccountName']
     
@@ -186,6 +201,7 @@ def getAccountName(row):
 
 
 
+@exception(logger)
 def writeConsolidatedMapping(strAccountNameToProcess=""):
     dfBS = pd.read_csv(getConfig("bankstatements", "consolidated"))
 
