@@ -1,9 +1,10 @@
-from datetime import datetime
 import csv
 import sys
 import logging
 from att.logger import create_logger
 from att.logger import exception
+from att.utils import toNumber, toDate, removeSpace
+
 from os import listdir
 from os.path import isfile, join
 import pyexcel as p
@@ -40,14 +41,6 @@ def processAccountName(accountName, accountNo):
 
     return accountName
 
-@exception(logger)
-def toDate(datetime_str, strFormat):
-    try:
-        datetime_object = datetime.strptime(datetime_str, strFormat)
-        return datetime_object.strftime("%d-%b-%Y")
-    except:
-        return ""
-
 
 @exception(logger)
 def periodToDates(period):
@@ -56,27 +49,7 @@ def periodToDates(period):
     periods = period.split(" To ")
     return periods;
 
-@exception(logger)
-def toNumber(strNum):
-    strNum = removeSpace(strNum)
-    strNum = re.sub(r",", "", strNum)
-    val = 0
-    try:
-        val = float(strNum)
-    except:
-        val=0
-        #raise
 
-    return val
-
-@exception(logger)
-def removeSpace(s):
-    s = str(s)
-    s = re.sub(r"^\s+|\s+$", "", s)
-    s = re.sub(r"\s+", " ", s)
-    s = re.sub(r"=", "", s)
-    s = re.sub(r"\"", "", s)
-    return s
 
 @exception(logger)
 def getCSVFiles():
@@ -95,7 +68,7 @@ def readCSVFiles():
     csvfiles = getCSVFiles()
     
     fields = ['File Name', 'Sno', 'SnoCopied', 'Bank', 'AccountName', 'AccountNo', 'StartDate', 'EndDate','TxnDate','ValueDate','Description',
-    'RefNo','AmountDebit','AmountCredit','Balance'] 
+    'RefNo','AmountDebit','AmountCredit','Dr/Cr','Balance']
     rows = []
 
     with open(getConfig("bankstatements", "consolidated"), 'w', newline='') as csvfile: 
@@ -211,11 +184,13 @@ def readCSVFile(strFilePath):
         ValueDate = getValueFromSheet(bankName, sheet, "ValueDate", row_ref)
         Description = getValueFromSheet(bankName, sheet, "Description", row_ref)
         RefNo = getValueFromSheet(bankName, sheet, "RefNo", row_ref)
-        Amount = toNumber(getValueFromSheet(bankName, sheet, "Amount", row_ref))
+        Amount_Orig = toNumber(getValueFromSheet(bankName, sheet, "Amount", row_ref))
         Debit_Credit = getValueFromSheet(bankName, sheet, "Debit_Credit", row_ref)
         AmountDebit = toNumber(getValueFromSheet(bankName, sheet, "AmountDebit", row_ref))
         AmountCredit = toNumber(getValueFromSheet(bankName, sheet, "AmountCredit", row_ref))
         Balance = toNumber(getValueFromSheet(bankName, sheet, "Balance", row_ref))
+        Amount = Amount_Orig
+
 
         if bankName == "sbi":
             sbiSno = sbiSno + 1
@@ -236,14 +211,23 @@ def readCSVFile(strFilePath):
 
         if Debit_Credit == "DR":
             AmountDebit = Amount
-            Amount = 0
+            AmountCredit = 0
         if Debit_Credit == "CR":
             AmountCredit = Amount
-            Amount = 0
+            AmountDebit = 0
+
+        if Debit_Credit == "":
+            if AmountDebit > 0:
+                Debit_Credit = "DR"
+            else:
+                Debit_Credit = "CR"
+
+        if AmountDebit == 0 and AmountCredit == 0:
+            print (Amount)
 
         Sno = Sno + 1
         row = [strFilePath, Sno, sno_target,bankName,accountName, accountNo, startDate, endDate,TxnDate,ValueDate,Description,
-RefNo,AmountDebit,AmountCredit,Balance]
+RefNo,AmountDebit,AmountCredit,Debit_Credit,Balance]
         rows.append(row)
 
         i += 1

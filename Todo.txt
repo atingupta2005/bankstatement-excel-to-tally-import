@@ -1,10 +1,7 @@
-1. Make Keyword to Ledger Mapping
 2. Prepare Documentation
 3. Match transactions between bank accounts -> Match by Amount, Data, From Description Transaction ID.
     Do it in 2_WriteConsolidated Mapping.py
-4. Fix issue of Logger Decorator
-5. Remove unneceray print statements
-
+4. Match transactions from my noted details and update in current statement
 
 Documentation:
     - How to run:

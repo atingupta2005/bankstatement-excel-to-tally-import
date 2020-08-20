@@ -32,7 +32,7 @@ def writeXLToolFile(accountName):
     dfXLtoolimport = dfConsolidatedMapping
 
     dfXLtoolimport['DATE'] = dfXLtoolimport['TxnDate']
-    dfXLtoolimport['STANDARD NARRATION'] = dfXLtoolimport['DescriptionRefNo']
+    dfXLtoolimport['STANDARD NARRATION'] = dfXLtoolimport['My_Narration'] + " --- " + dfXLtoolimport['DescriptionRefNo']
     dfXLtoolimport['VOUCHER TYPE'] = dfXLtoolimport['VoucherType']
     dfXLtoolimport['AMOUNT'] = dfXLtoolimport['AmountDebit'] + dfXLtoolimport['AmountCredit']
     dfXLtoolimport['LEDGER - BY / DR'] = ""

@@ -1,6 +1,12 @@
 # Specify app configuration here
 bankstatements:
    folderpath: "Data/BankStatements"
-   consolidated: "Data/consolidated.csv"
-   consolidatedMapping: "Data/consolidated_mapping.csv"
-   xltoolimportfile: "Data/xltoolimportfile.csv"
+   consolidated: "Data/1_consolidated.csv"
+   consolidated_myNarration: "Data/2_consolidated_myNarration.csv"
+   consolidatedMapping: "Data/3_consolidated_mapping.csv"
+   xltoolimportfile: "Data/4_xltoolimportfile.csv"
+   targetDateFormat: "%d-%b-%Y"
+
+myDetails:
+   myNarrationsFile: "Data/Daily Worksheet.csv"
+   myNarrationsFile_updated_matched: "Data/Daily Worksheet_Updated_Matched.csv"

@@ -1,6 +1,8 @@
 import yaml
 
+#file = open('resources/config.yaml', 'r')
 file = open('resources/config.yaml', 'r')
+
 cfg = yaml.load(file, Loader=yaml.FullLoader)
 
 def getConfig(strLabel, *labels):

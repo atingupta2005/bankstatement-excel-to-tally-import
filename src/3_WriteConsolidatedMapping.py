@@ -203,7 +203,7 @@ def getAccountName(row):
 
 @exception(logger)
 def writeConsolidatedMapping(strAccountNameToProcess=""):
-    dfBS = pd.read_csv(getConfig("bankstatements", "consolidated"))
+    dfBS = pd.read_csv(getConfig("bankstatements", "consolidated_myNarration"))
 
     # We need to export the specific account only
     if strAccountNameToProcess != "":
@@ -249,6 +249,7 @@ def writeConsolidatedMapping(strAccountNameToProcess=""):
 
     dfBS_cols = "AccountName,Bank,AccountBankName,TxnDate,DescriptionRefNo,CrossAccountName,Match,Pattern,Label,AmountDebit,AmountCredit,Balance,IsContra,VoucherType,IsTransferInFamily,IsSuspense,IsTaxRebate".split(",")
     #dfBS_cols_2 = "AccountBankName,TxnDate,DescriptionRefNo,CrossAccountName,Match,Pattern,Label,AmountDebit,AmountCredit".split(",")
+    dfBS_cols = "AccountName,Bank,AccountBankName,TxnDate,DescriptionRefNo,My_Narration,CrossAccountName,My_Cross Account,Match,Pattern,Label,AmountDebit,AmountCredit,Balance,IsContra,My_Is Contra?,VoucherType,My_Voucher Type,IsTransferInFamily,IsSuspense,My_Suspense?,IsTaxRebate,My_Tax Rebate?,My Is Matched?,CrossMatchesReferences?".split(",")
 
     dfBS = dfBS[dfBS_cols]
 
