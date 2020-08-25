@@ -4,6 +4,7 @@ from att.logger import exception
 from att.logger import create_logger
 from att.config import getConfig
 from att.crossAccountMapping import dictAcNameDict
+from att.utils import isFileExists, toLowerStr
 
 logger = create_logger()
 
@@ -16,7 +17,7 @@ def getCrossAccountName(row):
     acName = "Suspense"
     for key,val in dictAcNameDict.items():
         #key = r".*" + key + ".*"
-        match = re.findall(key, row['DescriptionRefNo'].lower())
+        match = re.findall(key, toLowerStr(row['DescriptionRefNo']))
         if match:
             acName =  val
         
@@ -60,9 +61,15 @@ def getCrossAccountName_v2(row):
                 for v2 in v1:
                     if isLog:
                         logger.info (f"4:  {v2}")
-                        logger.info (f"match: {(v2, row[column_name].lower())}")
+                        logger.info (f"match: {(v2, toLowerStr(row[column_name]))}")
 
-                    match = re.findall(v2.lower(), row[column_name].lower())
+                    if "[" in v2:
+                        pass
+
+                    try:
+                        match = re.findall(toLowerStr(v2), toLowerStr(row[column_name]) )
+                    except:
+                        pass
                     if match:
                         my_match.append(";".join(match))
                         my_v2.append(v2)
@@ -174,15 +181,15 @@ def getIsTaxRebate(row):
 def getAccountBankName(row):
     strAccountBankName = ""
     
-    if "atin" in row["AccountName"].lower():
+    if "atin" in toLowerStr(row["AccountName"]):
         strAccountBankName = "Atin" + row["Bank"]
-    if "pooja" in row["AccountName"].lower():
+    if "pooja" in toLowerStr(row["AccountName"]):
         strAccountBankName = "Pooja" + row["Bank"]
-    if "girjesh" in row["AccountName"].lower():
+    if "girjesh" in toLowerStr(row["AccountName"]):
         strAccountBankName = "Girjesh" + row["Bank"]
-    if "200008519416" in row["AccountNo"].lower():
+    if "200008519416" in toLowerStr(row["AccountNo"]):
         strAccountBankName = "ATTLogics" + row["Bank"]
-    if "100004509247" in row["AccountNo"].lower():
+    if "100004509247" in toLowerStr(row["AccountNo"]):
         strAccountBankName = "Girjesh" + row["Bank"]
     
     return strAccountBankName
@@ -192,9 +199,9 @@ def getAccountBankName(row):
 def getAccountName(row):
     strAccountName = row['AccountName']
     
-    if "100004509247" in row["AccountNo"].lower():
+    if "100004509247" in toLowerStr(row["AccountNo"]):
         strAccountName = "GIRJESH GUPTA"
-    if "200008519416" in row["AccountNo"].lower():
+    if "200008519416" in toLowerStr(row["AccountNo"]):
         strAccountName = "ATT LOGICS PVT LTD"
     
     return strAccountName
@@ -229,7 +236,7 @@ def writeConsolidatedMapping(strAccountNameToProcess=""):
             refNo = ""
         elif type(refNo) != str:
             refNo = str(refNo)
-        
+
         dfBS.loc[i,'DescriptionRefNo'] = dfBS.loc[i,'Description'] + " # " + refNo
         dfBS.loc[i,'AccountName'] = getAccountName(dfBS.iloc[i])
         dfBS.loc[i,'AccountBankName'] = getAccountBankName(dfBS.iloc[i])
@@ -242,7 +249,6 @@ def writeConsolidatedMapping(strAccountNameToProcess=""):
         dfBS.loc[i,'Match'] = "\r\n".join(match)
         dfBS.loc[i,'Pattern'] = "\r\n".join(pattern)
         dfBS.loc[i,'Label'] = "\r\n".join(label)
-        
 
     del dfBS["Description"]
     del dfBS["RefNo"]
@@ -253,9 +259,14 @@ def writeConsolidatedMapping(strAccountNameToProcess=""):
 
     dfBS = dfBS[dfBS_cols]
 
-    dfBS.to_csv(getConfig("bankstatements", "consolidatedMapping"), index = False)
+    strFileToWrite = getConfig("bankstatements", "consolidatedMapping")
+    if isFileExists(strFileToWrite):
+        print(f"File {strFileToWrite} already exists.")
+        return
+
+    dfBS.to_csv(strFileToWrite, index = False)
 
 if __name__ == "__main__":
     # Specify which account to be processed. Specify nothing to include all
-    strAccountName = "ATT LOGICS PVT LTD"
+    strAccountName = ""
     writeConsolidatedMapping(strAccountName)

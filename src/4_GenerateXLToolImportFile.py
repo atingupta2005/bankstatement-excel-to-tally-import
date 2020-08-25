@@ -1,6 +1,8 @@
 import pandas as pd
+import numpy as np
 from att.logger import exception
 from att.logger import create_logger
+from att.utils import isFileExists
 import re
 from att.config import getConfig
 from att.crossAccountMapping import dictAcNameDict
@@ -13,6 +15,12 @@ logger = create_logger()
 def getBankLedgerName(row):
     if "indusind" in row['Bank'].lower():
         return "Indusind Bank A/c"
+    if "sbi" in row['Bank'].lower():
+        return "State Bank of India"
+    if "kmbl" in row['Bank'].lower():
+        return "Kotak Mahindra Bank Limited"
+    if "indian" in row['Bank'].lower():
+        return "Indian Bank"
 
 @exception(logger)
 def getXLToolColumnNames():
@@ -32,6 +40,7 @@ def writeXLToolFile(accountName):
     dfXLtoolimport = dfConsolidatedMapping
 
     dfXLtoolimport['DATE'] = dfXLtoolimport['TxnDate']
+    dfXLtoolimport = dfXLtoolimport.replace(np.nan, '', regex=True)
     dfXLtoolimport['STANDARD NARRATION'] = dfXLtoolimport['My_Narration'] + " --- " + dfXLtoolimport['DescriptionRefNo']
     dfXLtoolimport['VOUCHER TYPE'] = dfXLtoolimport['VoucherType']
     dfXLtoolimport['AMOUNT'] = dfXLtoolimport['AmountDebit'] + dfXLtoolimport['AmountCredit']
@@ -49,7 +58,7 @@ def writeXLToolFile(accountName):
         strBank = dfXLtoolimport.loc[i, 'Bank']
         strBank = getBankLedgerName(dfXLtoolimport.loc[i])
 
-        if amountDebit < 0:
+        if amountDebit <= 0:
             dfXLtoolimport.loc[i,'LEDGER - BY / DR'] = strBank
             dfXLtoolimport.loc[i,'LEDGER - TO / CR'] = strCrossAccountName
         else:
@@ -57,9 +66,15 @@ def writeXLToolFile(accountName):
             dfXLtoolimport.loc[i,'LEDGER - BY / DR'] = strCrossAccountName
 
     dfXLtoolimport = dfXLtoolimport[columns]
-    dfXLtoolimport.to_csv(getConfig("bankstatements", "xltoolimportfile"), index=False)
+
+    strFileToWrite = getConfig("bankstatements", "xltoolimportfile")
+    if isFileExists(strFileToWrite):
+        print(f"File {strFileToWrite} already exists.")
+        return
+
+    dfXLtoolimport.to_csv(strFileToWrite, index=False)
 
 if __name__ == "__main__":
-    accountName = "ATT LOGICS PVT LTD"
+    accountName = "ATIN KUMAR"
     writeXLToolFile(accountName)
 

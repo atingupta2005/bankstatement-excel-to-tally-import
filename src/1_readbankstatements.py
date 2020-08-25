@@ -3,7 +3,7 @@ import sys
 import logging
 from att.logger import create_logger
 from att.logger import exception
-from att.utils import toNumber, toDate, removeSpace
+from att.utils import toNumber, toDate, removeSpace, isFileExists
 
 from os import listdir
 from os.path import isfile, join
@@ -65,13 +65,18 @@ def getExcelFiles():
 
 @exception(logger)
 def readCSVFiles():
+    strFileToWrite = getConfig("bankstatements", "consolidated")
+    if isFileExists(strFileToWrite):
+        print(f"File {strFileToWrite} already exists.")
+        return
+
     csvfiles = getCSVFiles()
     
     fields = ['File Name', 'Sno', 'SnoCopied', 'Bank', 'AccountName', 'AccountNo', 'StartDate', 'EndDate','TxnDate','ValueDate','Description',
     'RefNo','AmountDebit','AmountCredit','Dr/Cr','Balance']
     rows = []
 
-    with open(getConfig("bankstatements", "consolidated"), 'w', newline='') as csvfile: 
+    with open(strFileToWrite, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile) 
         csvwriter.writerow(fields) 
 

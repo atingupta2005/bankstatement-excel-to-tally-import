@@ -6,7 +6,19 @@ import collections
 dictAcNameDict = collections.OrderedDict()
 
 dictAcNameDict = {
-    "Online Shopping": 
+    "Misc Exp":
+        [  # Match Or Condition for all list items
+            {  # Match And Condition for all list items
+                "AmountDebit": [r"^[1-4]\.\d.*$"],
+            },
+        ],
+    "Misc Income":
+        [  # Match Or Condition for all list items
+            {  # Match And Condition for all list items
+                "AmountCredit":  [r"^[1-4]\.\d.*$"],
+            },
+        ],
+    "Online Shopping":
         [   # Match Or Condition for all list items
             { # Match And Condition for all list items
                 "1_DescriptionRefNo":[r".*amazon.*",r".*shopclues.*",r".*/6244/PAYPAL", r".*ROMSONS.IN.*",r".*2CO.com.*sketchman-stud.*", 
@@ -25,8 +37,9 @@ dictAcNameDict = {
                 
             },
         ],
-        
-        "Government Document Exp": 
+
+
+    "Government Document Exp":
         [
             {
                 "1_DescriptionRefNo":[r".*passport.*",],
@@ -36,7 +49,7 @@ dictAcNameDict = {
         ],
         
     
-    "Training Delivery Exp": 
+    "Self Learning Exp":
         [
             {
                 "1_DescriptionRefNo":[r".*udemy.*",
@@ -48,16 +61,18 @@ dictAcNameDict = {
                     r".*Pluralsight.*",
                     r".*manning.*",
                     r".*IIT.*",
-                    r".*Flight.*Tickets.*",r".*E2E.*Networks.*",],
+                    ],
                 "2_DescriptionRefNo":[r"^((?!rev).)*$",],
                 
             },
         ],
     
-    "Self Learning Exp": 
+    "Training Delivery Exp":
         [
             {
                 "1_DescriptionRefNo":[
+                    r".*Flight.*Tickets.*",
+                    r".*E2E.*Networks.*",
                     r".*google.*",
                     r".*namecheap.*",
                     r".*name-cheap.*",
@@ -141,7 +156,7 @@ dictAcNameDict = {
     "NPS": 
         [
             {
-                "DescriptionRefNo":[r".*nps.*",],
+                "DescriptionRefNo":[r".*nps.*", r".*National.*Pension.*System.*"],
             },
         ],
     "Online Shopping Refund": 
@@ -176,25 +191,33 @@ dictAcNameDict = {
                 "DescriptionRefNo":[r".*int.pd.*", r".*CREDIT INTEREST.*", r".*Consolidated.*Interest.*Payment.*",],
             },
         ],    
-    "Cash Withdrawal": 
+    "Cash":
         [
             {
-                "1_DescriptionRefNo":[r".*atm", r".*atm.*",r".*atw/.*",r".*atl/.*"],
+                "1_DescriptionRefNo":[r".*atm", r".*ATM.*", r".*atm.*",r".*atw/.*",r".*atl/.*", r".*self.*"],
                 "2_DescriptionRefNo":[r"^((?!reverse).)*$"],
                 "3_DescriptionRefNo":[r"^((?!amc).)*$"],
             },
-        ],    
-    "Rev Cash Withdrawal": 
+        ],
+    "Rev Cash":
         [
             {
                 "1_DescriptionRefNo":[r".*REVERSE.*",],
                 "2_DescriptionRefNo":[r".*ATM.*",],
             },
         ],
+    "LIC Loan":
+        [
+            {
+                "1_DescriptionRefNo":[r".*/lic.*", r".*Life Insurance Corpora.*"],
+                "2_DescriptionRefNo": [r".*loan.*", r".*Life Insurance Corpora.*"],
+            },
+        ],
     "LIC Premium": 
         [
             {
-                "DescriptionRefNo":[r".*/lic.*", r".*Life Insurance Corpora.*"],
+                "1_DescriptionRefNo":[r".*/lic.*", r".*Life Insurance Corpora.*"],
+                "2_DescriptionRefNo": [r"^((?!loan).)*$"],
             },
         ],
     "Office Rent":
@@ -230,13 +253,7 @@ dictAcNameDict = {
                 "DescriptionRefNo":[r".*KSPAYOUT.*"],
             },
         ],
-    "Cash": 
-        [
-            {
-                "DescriptionRefNo":[r".*CASH DEPOSIT.*"],
-            },
-        ],
-    "Atin SBI": 
+    "Atin SBI":
         [
             {
                 "DescriptionRefNo":[r".*ATIN.*",".*9810707414.*",r".*3564.*"],
@@ -298,14 +315,7 @@ dictAcNameDict = {
                 "DescriptionRefNo":[r".*FD A/c.*",],
             },
         ],
-    "Cash":
-        [
-            {
-                "DescriptionRefNo":[r".*self.*",],
-                "AccountBankName":[r"ATTLogicsindusind"],
-            },
-        ],
-    "ATT Traders": 
+    "ATT Traders":
         [
             {
                 "DescriptionRefNo":[r".*att traders.*",r".*9416.*"],
@@ -357,7 +367,7 @@ dictAcNameDict = {
     "Training Provided":
         [
             {
-                "DescriptionRefNo":[r".*BRAIN4CE.*", ".*iiht.*", ".*sfj.*", r".*TAI INFOTECH.*"],
+                "DescriptionRefNo":[r".*BRAIN4CE.*", ".*iiht.*", ".*sfj.*", r".*TAI INFOTECH.*", r".*SOFTWARE.*POETS.*", r".*INFODART.*TECHNO.*"],
             },
         ],
     "Freelancing Received":
@@ -371,8 +381,8 @@ dictAcNameDict = {
             {
                 "DescriptionRefNo":[r".*Freelancing.*"],
             },
-        ],        
-    }
+        ],
+}
 
 
 
@@ -388,7 +398,6 @@ def populateDictAcNameDict(dictAcNameDict, dickKey , lstVals):
 
     for val in lstVals:
         dctNew["DescriptionRefNo"].append(r".*" + val[-6::] + ".*")
-
 
     dictAcNameDict[dickKey] = [dctNew]
     

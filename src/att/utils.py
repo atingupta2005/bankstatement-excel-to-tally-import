@@ -27,7 +27,11 @@ def toNumber(strNum):
 
     return val
 
+def toLowerStr(valCmp):
+    if type(valCmp) is str:
+        valCmp = valCmp.lower()
 
+    return str(valCmp)
 
 def removeSpace(s):
     s = str(s)
@@ -50,3 +54,9 @@ def isAmountSame(amount, amount_2):
         return True
     else:
         return False
+
+def isFileExists(strFilePath):
+    import os.path
+    from os import path
+
+    return path.exists(strFilePath)

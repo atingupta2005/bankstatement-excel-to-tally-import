@@ -5,7 +5,7 @@ from att.logger import create_logger
 from att.config import getConfig
 from att.logger import create_logger
 from att.logger import exception
-from att.utils import toDate
+from att.utils import toDate, isFileExists
 from att.utils import toNumber
 from att.utils import isAmountSame
 from att.bankStatementConfig import getBankStatementConfig
@@ -48,7 +48,7 @@ def fetchNarrations():
         amount_2 = toNumber(dfMyNarrationsFile.loc[j, 'Amount'])
         dfMyNarrationsFile.loc[j, 'Amount'] = amount_2
 
-        strAccountBankName_2 = dfMyNarrationsFile.loc[j, 'Initiate Account Bank Name']
+        strAccountBankName_2 = f"{dfMyNarrationsFile.loc[j, 'Initiate Account Bank Name']}"
         dfMyNarrationsFile.loc[j, 'Initiate Account Bank Name'] = strAccountBankName_2.lower()
 
     dfConsolidatedFile["My_Narration"] = ""
@@ -76,7 +76,7 @@ def fetchNarrations():
         strBank = dfConsolidatedFile.loc[i,'Bank']
         strAccountName = dfConsolidatedFile.loc[i,'AccountName']
         amount = toNumber(dfConsolidatedFile.loc[i,'Amount'])
-        StrDrCr = dfConsolidatedFile.loc[i,'Dr/ CR'].lower()
+        StrDrCr = f"{dfConsolidatedFile.loc[i,'Dr/ CR']}".lower()
         strAccountBankName = strAccountName + " " + strBank
         strAccountBankName = strAccountBankName.lower()
 
@@ -87,10 +87,10 @@ def fetchNarrations():
         for j in range(0, len(dfMyNarrationsFile)):
             match = True
 
-            StrDrCr_2 = dfMyNarrationsFile.loc[j, 'Dr/ CR'].lower()
-            txn_Date_2 = dfMyNarrationsFile.loc[j, 'Txn Date']
+            StrDrCr_2 = f"{dfMyNarrationsFile.loc[j, 'Dr/ CR']}".lower()
+            txn_Date_2 = f"{dfMyNarrationsFile.loc[j, 'Txn Date']}"
 
-            strAccountBankName_2 = dfMyNarrationsFile.loc[j, 'Initiate Account Bank Name']
+            strAccountBankName_2 = f"{dfMyNarrationsFile.loc[j, 'Initiate Account Bank Name']}"
             amount_2 = dfMyNarrationsFile.loc[j, 'Amount']
 
             #if amount_2 == 740:
@@ -135,7 +135,13 @@ def fetchNarrations():
                 #break
 
     logger.info(f"Total Matched:  {intMatchCount}")
-    dfConsolidatedFile.to_csv(getConfig("bankstatements", "consolidated_myNarration"), index=False)
+
+    strFileToWrite = getConfig("bankstatements", "consolidated_myNarration")
+    if isFileExists(strFileToWrite):
+        print(f"File {strFileToWrite} already exists.")
+        return
+
+    dfConsolidatedFile.to_csv(strFileToWrite, index=False)
     dfMyNarrationsFile.to_csv(getConfig("myDetails", "myNarrationsFile_updated_matched"), index=False)
 
 if __name__ == "__main__":

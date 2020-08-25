@@ -2,6 +2,25 @@
 3. Match transactions between bank accounts -> Match by Amount, Data, From Description Transaction ID.
     Do it in 2_WriteConsolidated Mapping.py
 4. Match transactions from my noted details and update in current statement
+5. Take statement of ATT Traders and Put in Bank statements folder
+6. Password Encrypt bank statements to ZIP so that nobody can open except from our code using encrypted password
+7. Skip Duplicate entries match the narration, amount and date
+8. Handle in case "Daily Worksheet.csv" for 2_fetchMyNarrations.py
+
+Bugs:
+ Receipt Entries have wrong debit credit of bank account. Need to validate that if its a Receipt then Bank should be Debited and vice versa
+ Need to rectify the ledger account names - Mutual Funds, School Fee etc.
+ Need to create Voucher entries for Office Rent, Salary Receivable etc
+ If case of any amount is received from ATT Logics then need to consider for salary receivable/ payable/ office rent payable etc
+ Do not allow to create csv file if already exist
+ Write code to identify Contra transaction type
+ Self Learning Exp and Training Delivery Exp are getting mixed
+ Settle very low value transactions with Misc Exp
+ Settle very low value transactions with Misc Income
+ Check for cashback transaction by description. Put in Misc Income
+ Set the priority order between matching of trasaction and categoring to the cross account. Sometimes the priority of 2 cross account are different but target the same transaction
+
+
 
 Documentation:
     - How to run:
