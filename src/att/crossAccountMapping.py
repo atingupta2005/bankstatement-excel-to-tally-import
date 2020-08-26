@@ -357,7 +357,7 @@ dictAcNameDict = {
                 "AccountBankName":[r"girjeshindusind"],
             },
         ],    
-    "Salary Received":
+    "Salary Receivable":
         [
             {
                 "DescriptionRefNo":[r".*ATT LOGICS.*", r".*200008519416.*", r".*DIRECTOR REMUNR.*"],

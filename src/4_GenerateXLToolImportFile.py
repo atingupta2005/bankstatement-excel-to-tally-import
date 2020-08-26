@@ -34,6 +34,7 @@ def writeXLToolFile(accountName):
     logger.info(f"{dfConsolidatedMapping.columns}")
 
     dfConsolidatedMapping = dfConsolidatedMapping[dfConsolidatedMapping['AccountName'] == accountName]
+    dfConsolidatedMapping.reset_index(inplace=True)
 
     columns = getXLToolColumnNames()
 
@@ -52,9 +53,12 @@ def writeXLToolFile(accountName):
     dfXLtoolimport['CUSTOMISE VOUCHER TYPE'] = ""
 
     for i in range(0, len(dfXLtoolimport)):
-        strCrossAccountName = dfXLtoolimport.loc[i,'CrossAccountName']
-        amountDebit = dfXLtoolimport.loc[i, 'AmountDebit']
-        amountCredit = dfXLtoolimport.loc[i, 'AmountCredit']
+        try:
+            strCrossAccountName = dfXLtoolimport.loc[i, 'CrossAccountName']
+            amountDebit = dfXLtoolimport.loc[i, 'AmountDebit']
+            amountCredit = dfXLtoolimport.loc[i, 'AmountCredit']
+        except:
+            print ("Errr")
         strBank = dfXLtoolimport.loc[i, 'Bank']
         strBank = getBankLedgerName(dfXLtoolimport.loc[i])
 
@@ -75,6 +79,6 @@ def writeXLToolFile(accountName):
     dfXLtoolimport.to_csv(strFileToWrite, index=False)
 
 if __name__ == "__main__":
-    accountName = "ATIN KUMAR"
+    accountName = "POOJA GUPTA"
     writeXLToolFile(accountName)
 
